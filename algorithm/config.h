@@ -8,11 +8,15 @@
 #define Y_LIMIT 13
 
 
+// Абстракция, чтобы не передавать большое число аргументов.
 struct Config {
 
+    // Максимальное количество целей
     const unsigned int number_of_targets = TARGET_LIMIT;
+    // Максимальное количество точек в цели
     const unsigned int points_in_target = POINT_LIMIT;
 
+    // Максимальные отступы по осям
     const int x_epsilon = 2;
     const int y_epsilon = 2;
 

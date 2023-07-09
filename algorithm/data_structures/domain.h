@@ -5,6 +5,7 @@
 #include <iostream>
 
 
+// Непосредственно двумерная плоскость с точками на ней.
 class Domain {
 
     const unsigned int x_size;
@@ -15,6 +16,8 @@ class Domain {
 public:
 
     Domain() = default;
+
+    // Создание плоскости из массива константных размеров
     explicit Domain(int data[Y_LIMIT][X_LIMIT]) : x_size(X_LIMIT), y_size(Y_LIMIT), data() {
 
         for (int y = 0; y < this->y_size; ++y) {
@@ -24,7 +27,9 @@ public:
         }
 
     }
-    Domain(bool** data, unsigned int x_size, unsigned int y_size) : x_size(x_size), y_size(y_size) {
+
+    // Создание плоскости из массива произвольных размеров
+    Domain(int** data, unsigned int x_size, unsigned int y_size) : x_size(x_size), y_size(y_size) {
 
         for (int y = 0; y < this->y_size; ++y) {
             for (int x = 0; x < this->y_size; ++x) {
@@ -34,6 +39,7 @@ public:
 
     };
 
+    // get-методы для размеров плоскости
     unsigned int get_x_size() const { return this->x_size; };
     unsigned int get_y_size() const { return this->y_size; };
 
