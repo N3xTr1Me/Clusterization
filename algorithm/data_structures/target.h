@@ -4,6 +4,7 @@
 #include "point.h"
 
 
+// Интерфейс цели.
 class ITarget {
 
 public:
@@ -18,10 +19,13 @@ public:
 };
 
 
+// Цель, т.е. кластер точек, находящихся рядом друг с другои на плоскости (Близость определяется как расстояния не более
+// x_epsilon по оси X и y_espilon по оси Y).
 class Target : public ITarget {
 
     Point* data[POINT_LIMIT];
 
+    // "Реальный" размер, занятый валидными точками
     unsigned int size = 0;
 
 public:
@@ -36,8 +40,6 @@ public:
             this->data[i]->target_id = this;
         }
     };
-
-    Target(Target&& tar) = delete;
 
     explicit Target(Point& first) : size(0), data() {
         first.target_id = this;

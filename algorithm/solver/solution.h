@@ -4,8 +4,10 @@
 #include "../data_structures/target.h"
 
 
+// Решение, т.е. набор целей.
 class Solution {
 
+    // "Реальный" размер массива
     unsigned int size = 0;
 
     Target data[TARGET_LIMIT];
