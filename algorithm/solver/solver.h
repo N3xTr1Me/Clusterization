@@ -25,6 +25,11 @@ protected:
     // Создание новой цели и добавление ее во внутреннее хранилище
     void add_target(Point& first_point);
 
+    void remove_target(ITarget* id);
+
+    // Слияние целей
+    void merge(ITarget* original, ITarget* other);
+
     // Выбор цели конкретной точки
     void pick_cluster(Domain& domain, unsigned int x, unsigned int y, int x_epsilon, int y_epsilon);
 

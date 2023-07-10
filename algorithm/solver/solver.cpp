@@ -26,6 +26,32 @@ void Solver::add_target(Point &first_point) {
     }
 }
 
+void Solver::remove_target(ITarget *id) {
+
+    unsigned int index = 0;
+
+    for (index; index < this->number_of_targets; ++index) {
+
+        if (id == &(this->targets[index])) {
+            break;
+        }
+
+    }
+
+    for (unsigned int i = index; i < this->number_of_targets; ++i) {
+        this->targets[i] = this->targets[i + 1];
+    }
+
+    this->number_of_targets -= 1;
+}
+
+void Solver::merge(ITarget* original, ITarget* other) {
+
+    for (unsigned int i = 0; i < other->number_of_points(); ++i) {
+        original->add_point(*(other->operator[](i)));
+    }
+}
+
 void Solver::pick_cluster(Domain &domain, unsigned int x, unsigned int y, int x_epsilon, int y_epsilon) {
 
     // Сохраняем константную ссылку для внутренней логики
@@ -99,8 +125,10 @@ void Solver::pick_cluster(Domain &domain, unsigned int x, unsigned int y, int x_
     // Если есть сосед и по X и по Y, то смотрим на расстояние до исходной точки
     if (B != x_epsilon + 1 && C != y_epsilon + 1 && X_neighbour != nullptr && Y_neighbour != nullptr) {
 
-        if (B == C) {
+        if (B == C && X_neighbour != Y_neighbour) {
             X_neighbour->add_point(domain[y][x]);
+            this->merge(X_neighbour, Y_neighbour);
+            this->remove_target(Y_neighbour);
             return;
         }
         else {
@@ -125,6 +153,6 @@ Solution Solver::clusterize(Domain &domain, Config config) {
         }
     }
 
-    return {this->targets, this->number_of_targets};
+    return {this->targets, this->number_of_targets, domain.get_x_size(), domain.get_y_size()};
 
 }

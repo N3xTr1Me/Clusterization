@@ -61,8 +61,11 @@ public:
         this->size = other.size;
 
         for (unsigned int i = 0; i < this->size; ++i) {
+            std::cout << &other << std::endl;
             this->data[i] = other[i];
-            this->data[i]->target_id = this;
+            if (this->data[i] != nullptr) {
+                this->data[i]->target_id = this;
+            }
         }
 
         return *this;
