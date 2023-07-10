@@ -10,13 +10,17 @@ class Solution {
     // "Реальный" размер массива
     unsigned int size = 0;
 
+    const unsigned int domain_x = 0;
+    const unsigned int domain_y = 0;
+
     Target data[TARGET_LIMIT];
 
 public:
 
     Solution() = default;
 
-    Solution(Target data[TARGET_LIMIT], unsigned int size) : size(size) {
+    Solution(Target data[TARGET_LIMIT], unsigned int size, unsigned int x_size, unsigned int y_size) :
+    size(size), domain_x(x_size), domain_y(y_size) {
 
         for (unsigned int i = 0; i < this->size; ++i) {
             this->data[i] = data[i];
@@ -25,6 +29,9 @@ public:
     };
 
     unsigned int get_size() const { return this->size; };
+
+    unsigned int get_x() const { return this->domain_x; };
+    unsigned int get_y() const { return this->domain_y; };
 
     Target& operator[](unsigned int index) { return this->data[index]; };
 
