@@ -1,11 +1,11 @@
 #include <iostream>
 
-#include "lib/json/json.h"
+#include "./parser/json_parser.h"
 
 
 int main() {
-    Json::Value root;
-    std::cout << "Works fine!" << std::endl;
+
+    test("./tests/generated/test_1.json");
 
     return 0;
 }
