@@ -11,7 +11,7 @@ from generation import Solution
 
 class IO:
 
-    def __init__(self, test_dir: str = "tests") -> None:
+    def __init__(self, test_dir: str = "../tests/generated/") -> None:
 
         """
         Класс, отвечающий за работу с данными (ввод и вывод).

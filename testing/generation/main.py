@@ -32,7 +32,7 @@ def create_tests(number: int = 1, config: Optional[Config] = None) -> None:
 
 def main():
 
-    create_tests(5)
+    create_tests(1)
 
 
 

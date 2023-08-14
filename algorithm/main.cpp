@@ -27,7 +27,7 @@ int main() {
 
     auto result = sol.clusterize(dom, Config());
 
-    std::cout << "" << std::endl;
+    std::cout << "nfgh" << std::endl;
 
     return 0;
 }
