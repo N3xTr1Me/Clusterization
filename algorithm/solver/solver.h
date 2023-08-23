@@ -23,7 +23,7 @@ protected:
     inline unsigned int distance(int original, int adjacent, int epsilon);
 
     // Создание новой цели и добавление ее во внутреннее хранилище
-    void add_target(Point& first_point);
+    void add_target(Domain &domain, int x, int y);
 
     void remove_target(ITarget* id);
 

@@ -1,18 +1,20 @@
 #ifndef CLUSTERIZATION_TARGET_H
 #define CLUSTERIZATION_TARGET_H
 
+#include <stdexcept>
+
 #include "point.h"
 
 
-// Интерфейс цели.
 class ITarget {
 
 public:
-    virtual unsigned int number_of_points() const = 0;
+
+    virtual inline unsigned int get_size() const noexcept = 0;
 
     virtual void add_point(Point& point) = 0;
 
-    virtual Point* operator[](unsigned int index) const = 0;
+    virtual inline const Point& operator[](unsigned int index) const = 0;
 
     virtual ~ITarget() = default;
 
@@ -23,54 +25,87 @@ public:
 // x_epsilon по оси X и y_espilon по оси Y).
 class Target : public ITarget {
 
-    Point* data[POINT_LIMIT];
-
-    // "Реальный" размер, занятый валидными точками
+    // Реальное количество точек в цели
     unsigned int size = 0;
+
+    Point point_group[POINT_LIMIT];
 
 public:
 
-    Target() = default;
+    Target() : size(0), point_group() {};
 
-    Target(const Target& other) {
+    // Инициализация через первую точку
+    explicit Target(Point& first) : size(1), point_group() {
+
+
+        first.target_id = this;
+        this->point_group[0] = first;
+    }
+
+    // Конструктор копирования
+    Target(const Target& other) : point_group() {
+
         this->size = other.size;
 
         for (unsigned int i = 0; i < this->size; ++i) {
-            this->data[i] = other.data[i];
-            this->data[i]->target_id = this;
+            this->point_group[i] = other.point_group[i];
+            this->point_group[i].target_id = this;
         }
-    };
 
-    explicit Target(Point& first) : size(0), data() {
-        first.target_id = this;
-        this->data[this->size++] = &first;
     }
 
-    unsigned int number_of_points() const override { return this->size; };
+    //------------------------------------------------------------------------------------------------------------------
+
+    inline unsigned int get_size() const noexcept override { return this->size; };
 
     void add_point(Point& point) override {
-        if (this->size < POINT_LIMIT) {
-            point.target_id = this;
-            this->data[this->size++] = &point;
-        }
-    };
 
-    Point* operator[](unsigned int index) const override { return this->data[index]; };
-
-    Target& operator=(const Target& other) {
-        this->size = other.size;
-
-        for (unsigned int i = 0; i < this->size; ++i) {
-            this->data[i] = other[i];
-            if (this->data[i] != nullptr) {
-                this->data[i]->target_id = this;
-            }
+        if (this->size >= POINT_LIMIT) {
+            throw std::runtime_error("Point limit for this target reached!");
+            // TODO: поправить на добавление ошибки в общий "стейт" программы
         }
 
-        return *this;
+        this->point_group[this->size++] = point;
+
     }
 
+    //------------------------------------------------------------------------------------------------------------------
+
+    inline const Point& operator[](unsigned int index) const override {
+
+        if (index >= this->size) {
+            throw std::runtime_error("index out of bounds: " +
+                                     std::to_string(index) +
+                                     " / " +
+                                     std::to_string(this->size)
+            );
+            // TODO: +
+        }
+
+        return this->point_group[index];
+
+    }
+
+    Target& operator=(const Target& other) {
+
+        // Проверка на "само-присвоение"
+        if (this != &other) {
+
+            this->size = other.size;
+
+            for (unsigned int i = 0; i < this->size; ++i) {
+                this->point_group[i] = other.point_group[i];
+                this->point_group[i].target_id = this;
+            }
+
+        }
+        return *this;
+
+    }
+
+    // Переопределение деструктора потому что полиморфизм...
     ~Target() override = default;
+
 };
 
 

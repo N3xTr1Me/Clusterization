@@ -18,7 +18,7 @@ struct Point {
     int x = 0;
     int y = 0;
 
-    Point() = default;
+    Point() : x(0), y(0), valid(false), target_id(nullptr) {};
     Point(int x, int y) : x(x), y(y), valid(false), target_id(nullptr) {};
     Point(int x, int y, bool valid) : x(x), y(y), valid(valid), target_id(nullptr) {};
 

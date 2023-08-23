@@ -2,6 +2,7 @@
 #define CLUSTERIZATION_CONFIG_H
 
 #define TARGET_LIMIT 10
+#define NEIGHBOUR_LIMIT 8
 #define POINT_LIMIT 20
 
 #define X_LIMIT 11

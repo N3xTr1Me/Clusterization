@@ -19,10 +19,12 @@ unsigned int Solver::distance(int original, int adjacent, int epsilon) {
 
 }
 
-void Solver::add_target(Point &first_point) {
+void Solver::add_target(Domain &domain, int x, int y) {
+
     // Проверяем, что целей не больше максимального допустимого количества
     if (this->number_of_targets < TARGET_LIMIT) {
-        this->targets[this->number_of_targets++] = Target(first_point);
+        this->targets[this->number_of_targets++] = Target(domain[y][x]);
+        domain[y][x].target_id = &this->targets[this->number_of_targets];
     }
 }
 
@@ -47,8 +49,8 @@ void Solver::remove_target(ITarget *id) {
 
 void Solver::merge(ITarget* original, ITarget* other) {
 
-    for (unsigned int i = 0; i < other->number_of_points(); ++i) {
-        original->add_point(*(other->operator[](i)));
+    for (unsigned int i = 0; i < other->get_size(); ++i) {
+        original->add_point(const_cast<Point &>(other->operator[](i)));
     }
 }
 
@@ -118,7 +120,7 @@ void Solver::pick_cluster(Domain &domain, unsigned int x, unsigned int y, int x_
 
     // Если соседей нет, то создаем новую цель
     if ((B == x_epsilon + 1 && C == y_epsilon + 1) || (X_neighbour == nullptr && Y_neighbour == nullptr)) {
-        this->add_target(domain[y][x]);
+        this->add_target(domain, x, y);
         return;
     }
 
@@ -146,8 +148,12 @@ Solution Solver::clusterize(Domain &domain, Config config) {
     for (unsigned int y = 0; y < domain.get_y_size(); ++y) {
         for (unsigned int x = 0; x < domain.get_x_size(); ++x) {
 
+
+
             if (this->is_valid(domain[y][x])) {
+                std::cout << "iteration [" + std::to_string(x) + ", " + std::to_string(y) + "] ";
                 this->pick_cluster(domain, x, y,  config.x_epsilon, config.y_epsilon);
+                std::cout << "[3, 1] value: " << domain[1][3].target_id << "\n";
             }
 
         }
