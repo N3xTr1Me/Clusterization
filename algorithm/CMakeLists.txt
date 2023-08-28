@@ -1,9 +1,11 @@
 set(CMAKE_CXX_STANDARD 20)
 
 set(ALGORITHM_HDR
-        config.h
+        configuration/config.h
         data_structures/point.h
         data_structures/domain.h
+        data_structures/target.h
+        configuration/state_handler.h
 )
 
 set(ALGORITHM_SRC
