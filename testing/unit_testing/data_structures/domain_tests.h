@@ -102,12 +102,22 @@ namespace Domain_tests {
     void _generate_domain(int** data, unsigned int x_size, unsigned int y_size) {
 
         if (x_size > X_LIMIT) {
-            std::cout << "[Domain generation] X coordinate out of bounds! (replaced with default value)" << std::endl;
+
+            if (State::call().notification_mode()) {
+                std::cerr << "[Domain generation] X coordinate out of bounds! "
+                             "(replaced with default value)" << std::endl;
+            }
+
             x_size = X_LIMIT;
         }
 
         if (y_size > Y_LIMIT) {
-            std::cout << "[Domain generation] Y coordinate out of bounds! (replaced with default value)" << std::endl;
+
+            if (State::call().notification_mode()) {
+                std::cerr << "[Domain generation] Y coordinate out of bounds! "
+                             "(replaced with default value)" << std::endl;
+            }
+
             y_size = Y_LIMIT;
         }
 
@@ -151,6 +161,43 @@ namespace Domain_tests {
 
     }
 
+    void border_errors() {
+
+        unsigned int x_size = X_LIMIT + 1;
+        unsigned int y_size = Y_LIMIT + 1;
+
+        int test_case[y_size][x_size];
+
+        int* test[y_size];
+
+        for (unsigned int i = 0; i < y_size; ++i) {
+            test[i] = test_case[i];
+        }
+
+        _generate_domain(test, x_size, y_size);
+
+        Domain sample{test, x_size, y_size};
+
+        assert(State::call().check(Errors::domain_X_border_breach) == 1);
+        assert(State::call().check(Errors::domain_Y_border_breach) == 1);
+
+        std::cout << "X/Y size errors handling: OK" << std::endl;
+
+    }
+
+    void index_error() {
+
+        Domain sample{};
+
+        auto point = sample[1];
+
+        assert(point == nullptr);
+        assert(State::call().check(Errors::domain_index_out_of_bounds) == 1);
+
+        std::cout << "Index out of bounds handling: OK" << std::endl;
+
+    }
+
     void run_tests() {
 
         std::cout << "\nDomain data structure testing: \n{" << std::endl;
@@ -158,6 +205,8 @@ namespace Domain_tests {
         default_construction();
         fixed_size_construction();
         custom_size_construction();
+        border_errors();
+        index_error();
 
         std::cout << "}\n" << std::endl;
 

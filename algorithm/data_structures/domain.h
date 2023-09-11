@@ -6,7 +6,6 @@
 #include "../configuration/config.h"
 #include "./point.h"
 
-// TODO: Заменить проброс ошибки на сохранение стейта
 
 // Непосредственно двумерная плоскость с точками на ней.
 class Domain {
@@ -19,6 +18,10 @@ protected:
 
     // Массив точек
     Point plane[Y_LIMIT][X_LIMIT];
+
+//    Point[POINT_LIMIT];
+//
+//    Point* _plane[Y_LIMIT][X_LIMIT];
 
 public:
 
@@ -41,11 +44,25 @@ public:
     {
 
         if (x_size > X_LIMIT) {
-            throw std::runtime_error("X-axis size exceeds limit of " + std::to_string(X_LIMIT));
+            State::call().report(Errors::domain_X_border_breach);
+
+            if (State::call().notification_mode()) {
+                std::cerr << "X-axis size exceeds limit of " + std::to_string(X_LIMIT) << "\n";
+            }
+
+            // Если размер больше допустимого, то делаем его равным пороговому значению
+            x_size = X_LIMIT;
         }
 
         if (y_size > Y_LIMIT) {
-            throw std::runtime_error("Y-axis size exceeds limit of " + std::to_string(Y_LIMIT));
+            State::call().report(Errors::domain_Y_border_breach);
+
+            if (State::call().notification_mode()) {
+                std::cerr << "Y-axis size exceeds limit of " + std::to_string(X_LIMIT) << "\n";
+            }
+
+            // Если размер больше допустимого, то делаем его равным пороговому значению
+            y_size = Y_LIMIT;
         }
 
         this->x_size = x_size;
@@ -84,9 +101,16 @@ public:
     Point* operator[](unsigned int index) {
 
         if (index >= this->y_size) {
-            throw std::runtime_error("Index is out of bounds: " + std::to_string(index) +
-            " out of " + std::to_string(this->y_size)
-            );
+            State::call().report(Errors::domain_index_out_of_bounds);
+
+            if (State::call().notification_mode()) {
+
+                std::cerr << "Index is out of bounds: " + std::to_string(index) +
+                             " out of " + std::to_string(this->y_size) << "\n";
+
+            }
+
+            return nullptr;
         }
 
         return this->plane[index];

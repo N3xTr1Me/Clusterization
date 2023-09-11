@@ -5,6 +5,8 @@
 
 int main() {
 
+    State::call().disable_notification();
+
     Point_tests::run_tests();
     Domain_tests::run_tests();
     Target_tests::run_test();

@@ -2,7 +2,7 @@
 #define CLUSTERIZATION_POINT_H
 
 
-#include "../configuration/config.h"
+#include "../configuration/state_handler.h"
 
 
 class Target;

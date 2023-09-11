@@ -64,6 +64,34 @@ namespace Target_tests {
 
     }
 
+    void point_overflow() {
+
+        Target sample{};
+
+        for (unsigned int i = 0; i < POINT_LIMIT + 1; ++i) {
+            Point p{};
+            sample.add_point(p);
+        }
+
+        assert(sample.get_size() == POINT_LIMIT);
+        std::cout << "Overflow handling: OK" << std::endl;
+
+    }
+
+    void index_error() {
+
+        Target sample{};
+
+        for (int i = 0; i < POINT_LIMIT; ++i) {
+            Point p{i, i};
+            sample.add_point(p);
+        }
+
+        assert(sample[POINT_LIMIT + 1] == sample[POINT_LIMIT]);
+        std::cout << "Index out of bounds handling: OK" << std::endl;
+
+    }
+
     void run_test() {
 
         std::cout << "\nTarget data structure testing: \n{" << std::endl;
@@ -71,6 +99,8 @@ namespace Target_tests {
         default_construction();
         point_appending();
         copy_construction_assignment();
+        point_overflow();
+        index_error();
 
         std::cout << "}\n" << std::endl;
     }
