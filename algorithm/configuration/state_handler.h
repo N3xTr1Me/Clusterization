@@ -9,7 +9,8 @@ enum Errors : unsigned int
     
     domain_X_border_breach,
     domain_Y_border_breach,
-    domain_index_out_of_bounds,
+    domain_X_out_of_bounds,
+    domain_Y_out_of_bounds,
 
     target_points_overflow,
     target_index_out_of_bounds,
@@ -63,8 +64,8 @@ public:
     static const unsigned int targets_max = TARGET_LIMIT;
 
     //------------------------------------------------------------------------------------------------------------------
-    // Методы индикации ошибок
 
+    // Метод индикации ошибок
     void report(Errors code) noexcept {
 
         // Записываем ошибку в соответсвующую позицию массива ошибок
@@ -73,6 +74,15 @@ public:
         // В случае, если текущая цель переполнина меняем флаг, чтобы передать эту информацию Solver
         if (code == Errors::target_points_overflow) {
             this->current_target_full = true;
+        }
+
+    }
+
+    // Метод сброса счетчиков ошибок
+    void reset() {
+
+        for (unsigned int i = 0; i < Errors::error_codes; ++i) {
+            this->errors[i] = 0;
         }
 
     }

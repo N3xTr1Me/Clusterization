@@ -14,49 +14,20 @@
 
 namespace Domain_tests {
 
-    class TestDomain : public Domain {
-
-    public:
-
-        // Костыль Для тестирования
-        Point* hard_get(unsigned int x, unsigned int y) noexcept {
-
-            if (x >= X_LIMIT) {
-                return nullptr;
-            }
-
-            if (y >= Y_LIMIT) {
-                return nullptr;
-            }
-
-            return &this->plane[y][x];
-        };
-
-        ~TestDomain() override = default;
-    };
-
     void default_construction() {
 
-        TestDomain sample{};
+        Domain sample{};
 
         assert(sample.get_x_size() == 0);
         assert(sample.get_y_size() == 0);
 
         std::cout << "Default construction size assertion: OK" << std::endl;
 
-        for (unsigned int y = 0; y < Y_LIMIT; ++y) {
-            for(unsigned int x = 0; x < X_LIMIT; ++x) {
-                Point* dot = sample.hard_get(x, y);
+        for (int y = 0; y < Y_LIMIT; ++y) {
+            for(int x = 0; x < X_LIMIT; ++x) {
+                Point* dot = sample.get_point(x, y);
 
-                if (dot == nullptr) {
-                    throw std::runtime_error("Received a null point (nullptr)! "
-                                             "This should not happen, as Point struct provides a default constructor.");
-                }
-
-                assert(dot->target_id == nullptr);
-                assert(dot->valid == false);
-                assert(dot->x == 0);
-                assert(dot->y == 0);
+                assert(dot == nullptr);
             }
         }
 
@@ -85,14 +56,19 @@ namespace Domain_tests {
         Domain sample{points};
 
         for (auto test : cases) {
-            Point original = sample[test[1]][test[0]];
+
+            int x = test[0];
+            int y = test[1];
+
+            Point* original = sample.get_point(x, y);
 
             // На всякий случай...
-            assert(original.x == test[0]);
-            assert(original.y == test[1]);
+            assert(original != nullptr);
 
-            assert(original.target_id == nullptr);
-            assert(original.valid == true);
+            assert(original->x == test[0]);
+            assert(original->y == test[1]);
+
+            assert(original->target_id == nullptr);
         }
 
         std::cout << "Fixed size construction: OK" << std::endl;
@@ -147,11 +123,14 @@ namespace Domain_tests {
 
         Domain sample{test, X_LIMIT, Y_LIMIT};
 
-        for (unsigned int y = 0; y < Y_LIMIT; ++y) {
-            for (unsigned int x = 0; x < X_LIMIT; ++x) {
+        for (int y = 0; y < Y_LIMIT; ++y) {
+            for (int x = 0; x < X_LIMIT; ++x) {
 
                 if (test_case[y][x] > 0) {
-                    assert(sample[y][x].valid == true);
+
+                    auto dot = sample.get_point(x, y);
+                    assert(dot != nullptr);
+
                 }
 
             }
@@ -189,12 +168,21 @@ namespace Domain_tests {
 
         Domain sample{};
 
-        auto point = sample[1];
+        State::call().reset();
 
-        assert(point == nullptr);
-        assert(State::call().check(Errors::domain_index_out_of_bounds) == 1);
+        auto x_error = sample.get_point(1, 0);
 
-        std::cout << "Index out of bounds handling: OK" << std::endl;
+        assert(x_error == nullptr);
+        assert(State::call().check(Errors::domain_X_out_of_bounds) == 1);
+
+        std::cout << "X index out of bounds handling: OK" << std::endl;
+
+        auto y_error = sample.get_point(0, 1);
+
+        assert(y_error == nullptr);
+        assert(State::call().check(Errors::domain_Y_out_of_bounds) == 1);
+
+        std::cout << "Y index out of bounds handling: OK" << std::endl;
 
     }
 

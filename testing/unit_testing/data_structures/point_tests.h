@@ -15,7 +15,6 @@ namespace Point_tests {
         Point sample{};
 
         assert(sample.target_id == nullptr);
-        assert(sample.valid == false);
         assert(sample.x == 0);
         assert(sample.y == 0);
 
@@ -31,7 +30,6 @@ namespace Point_tests {
         Point sample{x, y};
 
         assert(sample.target_id == nullptr);
-        assert(sample.valid == false);
         assert(sample.x == x);
         assert(sample.y == y);
 
@@ -43,12 +41,10 @@ namespace Point_tests {
 
         int x = 10;
         int y = 20;
-        bool valid = true;
 
-        Point sample{x, y, valid};
+        Point sample{x, y};
 
         assert(sample.target_id == nullptr);
-        assert(sample.valid == valid);
         assert(sample.x == x);
         assert(sample.y == y);
 
@@ -60,16 +56,14 @@ namespace Point_tests {
 
         int x = 100;
         int y = 200;
-        bool valid = true;
 
-        Point original{x, y, valid};
+        Point original{x, y};
 
         //--------------------------------------------------------------------------------------------------------------
 
         Point constructor{original};
 
         assert(constructor.target_id == nullptr);
-        assert(constructor.valid == valid);
         assert(constructor.x == x);
         assert(constructor.y == y);
 
@@ -80,7 +74,6 @@ namespace Point_tests {
         Point assignment = original;
 
         assert(assignment.target_id == nullptr);
-        assert(assignment.valid == valid);
         assert(assignment.x == x);
         assert(assignment.y == y);
 
@@ -93,15 +86,12 @@ namespace Point_tests {
         int x = 12;
         int y = 14;
 
-        bool valid = true;
-
-        Point original{x, y, valid};
+        Point original{x, y};
 
         auto copy = Point::squeeze(original);
 
         assert(copy.x == x);
         assert(copy.y == y);
-        assert(copy.valid == valid);
 
         std::cout << "Copy to base class: OK" << std::endl;
 

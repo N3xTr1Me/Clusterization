@@ -19,8 +19,6 @@ namespace Target_tests {
 
             assert(test[i].x == 0);
             assert(test[i].y == 0);
-            assert(test[i].valid == false);
-
         }
 
         std::cout << "Default construction: OK" << std::endl;
@@ -37,7 +35,7 @@ namespace Target_tests {
 
         for (int i = 0; i < sample_size; ++i) {
 
-            sample[i] = Point(i, i, true);
+            sample[i] = Point(i, i);
             test.add_point(sample[i]);
             assert(sample[i].target_id == &test);
 
@@ -51,7 +49,7 @@ namespace Target_tests {
 
         Target test{};
 
-        Point data{7, 21, true};
+        Point data{7, 21};
         test.add_point(data);
 
         Target copy{test};

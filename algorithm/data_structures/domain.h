@@ -16,24 +16,35 @@ protected:
     unsigned int x_size = 0;
     unsigned int y_size = 0;
 
-    // Массив точек
-    Point plane[Y_LIMIT][X_LIMIT];
+    // Количество "реальных" (валидных) точек
+    unsigned int number_of_points = 0;
 
-//    Point[POINT_LIMIT];
-//
-//    Point* _plane[Y_LIMIT][X_LIMIT];
+    // "Реальные" точки, т.е. валидные
+    Point real_points[TARGET_LIMIT * POINT_LIMIT];
+
+    // Рассматриваемая область, как с валидными (реальными) точками, так и с невалидными (пустые указатели)
+    Point* plane[Y_LIMIT][X_LIMIT] = {nullptr};
 
 public:
 
     Domain() = default;
 
     // Конструктор области фиксированного размера
-    explicit Domain(int points[Y_LIMIT][X_LIMIT]) : x_size(X_LIMIT), y_size(Y_LIMIT), plane()
+    explicit Domain(int points[Y_LIMIT][X_LIMIT]) : x_size(X_LIMIT), y_size(Y_LIMIT), plane(), number_of_points()
     {
 
         for (int y = 0; y < this->y_size; ++y) {
             for (int x = 0; x < this->x_size; ++x) {
-                this->plane[y][x] = Point(x, y, points[y][x] > 0);
+
+                if (points[y][x] > 0) {
+
+                    this->real_points[this->number_of_points] = Point(x, y);
+                    this->plane[y][x] = &this->real_points[this->number_of_points];
+
+                    this->number_of_points++;
+
+                }
+
             }
         }
 
@@ -65,12 +76,23 @@ public:
             y_size = Y_LIMIT;
         }
 
+        unsigned int i = 0;
+
         this->x_size = x_size;
         this->y_size = y_size;
 
         for (int y = 0; y < y_size; ++y) {
             for (int x = 0; x < x_size; ++x) {
-                this->plane[y][x] = Point(x, y, points[y][x] > 0);
+
+                if (points[y][x] > 0) {
+
+                    this->real_points[i] = Point(x, y);
+                    this->plane[y][x] = &this->real_points[i];
+
+                    i++;
+
+                }
+
             }
         }
 
@@ -82,10 +104,13 @@ public:
         this->x_size = other.x_size;
         this->y_size = other.y_size;
 
-        for (int y = 0; y < this->y_size; ++y) {
-            for (int x = 0; x < this->x_size; ++x) {
-                this->plane[y][x] = other[y][x];
-            }
+        this->number_of_points = other.number_of_points;
+
+        for (unsigned int i = 0; i < this->number_of_points; ++i) {
+
+            this->real_points[i] = other.real_points[i];
+            this->plane[real_points[i].y][real_points[i].x] = &real_points[i];
+
         }
 
     }
@@ -97,15 +122,15 @@ public:
     unsigned int get_x_size() const { return this->x_size; };
     unsigned int get_y_size() const { return this->y_size; };
 
-    // Оператор обращения к массиву (точек)
-    Point* operator[](unsigned int index) {
+    // получение точки из массива
+    Point* get_point(int x, int y) {
 
-        if (index >= this->y_size) {
-            State::call().report(Errors::domain_index_out_of_bounds);
+        if (y >= this->y_size) {
+            State::call().report(Errors::domain_Y_out_of_bounds);
 
             if (State::call().notification_mode()) {
 
-                std::cerr << "Index is out of bounds: " + std::to_string(index) +
+                std::cerr << "Y index is out of bounds: " + std::to_string(y) +
                              " out of " + std::to_string(this->y_size) << "\n";
 
             }
@@ -113,7 +138,20 @@ public:
             return nullptr;
         }
 
-        return this->plane[index];
+        if (x >= this->x_size) {
+            State::call().report(Errors::domain_X_out_of_bounds);
+
+            if (State::call().notification_mode()) {
+
+                std::cerr << " index is out of bounds: " + std::to_string(x) +
+                             " out of " + std::to_string(this->x_size) << "\n";
+
+            }
+
+            return nullptr;
+        }
+
+        return this->plane[y][x];
 
     }
 
@@ -126,10 +164,13 @@ public:
             this->x_size = other.x_size;
             this->y_size = other.y_size;
 
-            for (int y = 0; y < this->y_size; ++y) {
-                for (int x = 0; x < this->x_size; ++x) {
-                    this->plane[y][x] = other[y][x];
-                }
+            this->number_of_points = other.number_of_points;
+
+            for (unsigned int i = 0; i < this->number_of_points; ++i) {
+
+                this->real_points[i] = other.real_points[i];
+                this->plane[real_points[i].y][real_points[i].x] = &real_points[i];
+
             }
 
         }

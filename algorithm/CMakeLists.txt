@@ -6,6 +6,7 @@ set(ALGORITHM_HDR
         data_structures/domain.h
         data_structures/target.h
         configuration/state_handler.h
+        data_structures/solution.h
 )
 
 set(ALGORITHM_SRC
