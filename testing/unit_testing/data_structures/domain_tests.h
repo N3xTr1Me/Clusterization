@@ -166,18 +166,33 @@ namespace Domain_tests {
 
     void index_error() {
 
+        // int test_case[Y_LIMIT][X_LIMIT];
+
+        // int* test[Y_LIMIT];
+
+        // for (unsigned int i = 0; i < Y_LIMIT; ++i) {
+        //     test[i] = test_case[i];
+        // }
+
+        // _generate_domain(test, X_LIMIT, Y_LIMIT);
+
+        // Domain sample{test, X_LIMIT, Y_LIMIT};
+
         Domain sample{};
+
+        int x_error_size = X_LIMIT + 1;
+        int y_error_size = Y_LIMIT + 1;
 
         State::call().reset();
 
-        auto x_error = sample.get_point(1, 0);
+        auto x_error = sample.get_point(x_error_size, 0);
 
         assert(x_error == nullptr);
         assert(State::call().check(Errors::domain_X_out_of_bounds) == 1);
 
         std::cout << "X index out of bounds handling: OK" << std::endl;
 
-        auto y_error = sample.get_point(0, 1);
+        auto y_error = sample.get_point(0, y_error_size);
 
         assert(y_error == nullptr);
         assert(State::call().check(Errors::domain_Y_out_of_bounds) == 1);

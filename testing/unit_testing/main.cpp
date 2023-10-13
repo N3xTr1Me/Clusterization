@@ -11,4 +11,6 @@ int main() {
     Domain_tests::run_tests();
     Target_tests::run_test();
 
+    return 0;
+
 }

@@ -13,8 +13,8 @@ class Domain {
 protected:
 
     // Размеры области
-    unsigned int x_size = 0;
-    unsigned int y_size = 0;
+    unsigned int x_size = X_LIMIT;
+    unsigned int y_size = Y_LIMIT;
 
     // Количество "реальных" (валидных) точек
     unsigned int number_of_points = 0;
