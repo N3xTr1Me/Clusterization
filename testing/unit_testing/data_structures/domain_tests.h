@@ -18,8 +18,8 @@ namespace Domain_tests {
 
         Domain sample{};
 
-        assert(sample.get_x_size() == 0);
-        assert(sample.get_y_size() == 0);
+        assert(sample.get_x_size() == X_LIMIT);
+        assert(sample.get_y_size() == Y_LIMIT);
 
         std::cout << "Default construction size assertion: OK" << std::endl;
 
@@ -79,7 +79,7 @@ namespace Domain_tests {
 
         if (x_size > X_LIMIT) {
 
-            if (State::call().notification_mode()) {
+            if (State::call().notifications_on()) {
                 std::cerr << "[Domain generation] X coordinate out of bounds! "
                              "(replaced with default value)" << std::endl;
             }
@@ -89,7 +89,7 @@ namespace Domain_tests {
 
         if (y_size > Y_LIMIT) {
 
-            if (State::call().notification_mode()) {
+            if (State::call().notifications_on()) {
                 std::cerr << "[Domain generation] Y coordinate out of bounds! "
                              "(replaced with default value)" << std::endl;
             }

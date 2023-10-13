@@ -19,12 +19,14 @@ public:
 
     Target() = default;
 
+    // "Основной" конструктор, создающий цель по первой точке
     explicit Target(Dot& first) : size(0), points() {
 
         this->points[this->size++] = first;
 
     }
 
+    // Конструктор копирования
     Target(const Target& other) {
 
         this->size = other.size;
@@ -39,20 +41,26 @@ public:
 
     inline unsigned int get_size() const noexcept { return this->size; };
 
+    // Добавление точки
     inline void add_point(Point& point) {
-
+        
+        // Проверяем на переполнение цели
         if (this->size >= POINT_LIMIT) {
+            
+            // Если в текущую цель добавить точку нельзя, то сообщим в State
+            State::call().report(
+                Errors::target_points_overflow,
+                "Target is full! Cannot add more points."
+            );
 
-            State::call().report(Errors::target_points_overflow);
-
-            if (State::call().notification_mode()) {
-                std::cerr << "Target is full! Cannot add more points.\n";
-            }
-
+            // и ничего не добавим
             return;
         }
 
+
+        // Если же массив внутри текущей цели не заполнен, то добавим в него упрощенное представление точки 'Dot'
         this->points[this->size++] = Point::squeeze(point);
+        // Также заменим в оригинальной указатель на цель, чтобы он указывал на текущую цель
         point.target_id = this;
 
     }
@@ -61,26 +69,26 @@ public:
 
     inline const Dot& operator[](unsigned int index) const {
 
+        // Если запрашиваемый индекс за пределами массива, то:
         if (index >= POINT_LIMIT) {
+            
+            // 1) Cообщим в State
+            State::call().report(
+                Errors::target_index_out_of_bounds,
+                "Index out of range! Limit of points in target is: " + std::to_string(POINT_LIMIT - 1)
+            );
 
-            State::call().report(Errors::target_index_out_of_bounds);
-
-            if (State::call().notification_mode()) {
-
-                std::cerr << "Index out of range! Limit of points in target is: " +
-                             std::to_string(POINT_LIMIT - 1) + "\n";
-
-            }
-
-            // Вернем последнюю точку
+            // 2) Вернем последнюю точку
             return this->points[POINT_LIMIT - 1];
         }
 
         return this->points[index];
     }
 
+    // Оператор присваивания, логика аналогичная конструктору копирования
     Target& operator=(const Target& other) {
 
+        // Однако еще проверяем на самоприсвоение
         if (this != &other) {
 
             this->size = other.size;

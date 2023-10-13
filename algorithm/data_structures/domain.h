@@ -1,8 +1,6 @@
 #ifndef CLUSTERIZATION_DOMAIN_H
 #define CLUSTERIZATION_DOMAIN_H
 
-#include <stdexcept>
-
 #include "../configuration/config.h"
 #include "./point.h"
 
@@ -53,27 +51,29 @@ public:
     // Создание области "произвольного" размера
     Domain(int** points, unsigned int x_size, unsigned int y_size) : plane()
     {
-
+        // Если размер по оси X больше допустимого, то:
         if (x_size > X_LIMIT) {
-            State::call().report(Errors::domain_X_border_breach);
+            
+            // 1) Сообщим об этом в глобальный State
+            State::call().report(
+                Errors::domain_X_border_breach,
+                "X-axis size exceeds limit of " + std::to_string(X_LIMIT)
+            );
 
-            if (State::call().notification_mode()) {
-                std::cerr << "X-axis size exceeds limit of " + std::to_string(X_LIMIT) << "\n";
-            }
-
-            // Если размер больше допустимого, то делаем его равным пороговому значению
+            // 2) сделаем его равным пороговому значению
             x_size = X_LIMIT;
         }
 
+        // Аналогично для размера по оси Y
         if (y_size > Y_LIMIT) {
-            State::call().report(Errors::domain_Y_border_breach);
 
-            if (State::call().notification_mode()) {
-                std::cerr << "Y-axis size exceeds limit of " + std::to_string(X_LIMIT) << "\n";
-            }
+            State::call().report(
+                Errors::domain_Y_border_breach,
+                "Y-axis size exceeds limit of " + std::to_string(Y_LIMIT)
+            );
 
-            // Если размер больше допустимого, то делаем его равным пороговому значению
             y_size = Y_LIMIT;
+
         }
 
         unsigned int i = 0;
@@ -119,34 +119,32 @@ public:
 
     // Методы "геттеры"
 
-    unsigned int get_x_size() const { return this->x_size; };
-    unsigned int get_y_size() const { return this->y_size; };
+    unsigned int get_x_size() const noexcept { return this->x_size; };
+    unsigned int get_y_size() const noexcept { return this->y_size; };
 
     // получение точки из массива
     Point* get_point(int x, int y) {
 
+        // Если запросили точку за пределами массива по Y, то:
         if (y >= this->y_size) {
-            State::call().report(Errors::domain_Y_out_of_bounds);
 
-            if (State::call().notification_mode()) {
+            // 1) Сообщим в State
+            State::call().report(
+                Errors::domain_Y_out_of_bounds,
+                "Y index is out of bounds: " + std::to_string(y) + " out of " + std::to_string(this->y_size)
+            );
 
-                std::cerr << "Y index is out of bounds: " + std::to_string(y) +
-                             " out of " + std::to_string(this->y_size) << "\n";
-
-            }
-
+            // 2) Вернем пустой указатель
             return nullptr;
         }
 
+        // Аналогично для X
         if (x >= this->x_size) {
-            State::call().report(Errors::domain_X_out_of_bounds);
 
-            if (State::call().notification_mode()) {
-
-                std::cerr << " index is out of bounds: " + std::to_string(x) +
-                             " out of " + std::to_string(this->x_size) << "\n";
-
-            }
+            State::call().report(
+                Errors::domain_X_out_of_bounds,
+                " index is out of bounds: " + std::to_string(x) + " out of " + std::to_string(this->x_size) 
+            );
 
             return nullptr;
         }

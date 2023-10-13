@@ -1,6 +1,9 @@
 #ifndef CLUSTERIZATION_STATE_HANDLER_H
 #define CLUSTERIZATION_STATE_HANDLER_H
 
+#include <iostream>
+#include <string>
+
 #include "./config.h"
 
 
@@ -39,7 +42,7 @@ class State {
 protected:
 
     // Флаг для режима сообщения об ошибках пользователю
-    bool mute = false;
+    bool notify = false;
 
     // Флаги для разрешения некритических ошибок
     bool current_target_full = false;
@@ -66,7 +69,7 @@ public:
     //------------------------------------------------------------------------------------------------------------------
 
     // Метод индикации ошибок
-    void report(Errors code) noexcept {
+    void report(Errors code, std::string message = "") noexcept {
 
         // Записываем ошибку в соответсвующую позицию массива ошибок
         this->errors[code]++;
@@ -76,10 +79,16 @@ public:
             this->current_target_full = true;
         }
 
+        // Проверяем не выключеы ли уведомления и есть ли что выводить вообще
+        if (this->notify && message.size() > 0) {
+            //Выводим сообщение об ошибке в отдельный поток
+            std::cerr << message << "\n";
+        }
+
     }
 
     // Метод сброса счетчиков ошибок
-    void reset() {
+    void reset() noexcept {
 
         for (unsigned int i = 0; i < Errors::error_codes; ++i) {
             this->errors[i] = 0;
@@ -92,13 +101,13 @@ public:
 
     unsigned int check(Errors code) const noexcept { return this->errors[code]; }
 
-    bool notification_mode() const noexcept { return this->mute; }
+    bool notifications_on() const noexcept { return this->notify; }
 
     //------------------------------------------------------------------------------------------------------------------
     // Смена режима оповещения об ошибках
 
-    void enable_notification() { this->mute = true; }
-    void disable_notification() { this->mute = false; }
+    void enable_notification() noexcept { this->notify = true; }
+    void disable_notification() noexcept { this->notify = false; }
 
 };
 
