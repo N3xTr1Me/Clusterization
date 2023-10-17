@@ -12,7 +12,7 @@ namespace Point_utility {
     // Отношения равенства вынесены сюда для удобства тестирования. 
     // В исходных классах Dot и Point оператор '==' не определен в угоду оптимизации.
 
-    inline bool dots_equal(Dot& first, Dot& second) {
+    inline bool dots_equal(const Dot& first, const Dot& second) {
 
         if (first.x == second.x && first.y == second.y) {
             return true;
@@ -22,7 +22,7 @@ namespace Point_utility {
 
     }
 
-    inline bool points_equal(Point& first, Point& second) {
+    inline bool points_equal(const Point& first, const Point& second) {
 
         if (first.target_id == second.target_id && dots_equal(first, second)) {
             return true;
