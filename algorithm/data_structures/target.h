@@ -70,16 +70,17 @@ public:
     inline const Dot& operator[](unsigned int index) const {
 
         // Если запрашиваемый индекс за пределами массива, то:
-        if (index >= POINT_LIMIT) {
+        if (index >= this->size) {
             
             // 1) Cообщим в State
             State::call().report(
                 Errors::target_index_out_of_bounds,
-                "Index out of range! Limit of points in target is: " + std::to_string(POINT_LIMIT - 1)
+                "Index out of range! Points in target: " + std::to_string(this->size)
             );
 
-            // 2) Вернем последнюю точку
-            return this->points[POINT_LIMIT - 1];
+            // 2) Вернем последнюю точку, если размер цели не 0. 
+            // В противном случае вернем первую дефолтно инициализированную точку.
+            return this->points[this->size > 0 ? this->size - 1 : 0];
         }
 
         return this->points[index];
