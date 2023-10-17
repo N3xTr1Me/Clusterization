@@ -19,7 +19,6 @@ struct Dot {
 
     Dot() = default;
     Dot(int x, int y) : x(x), y(y) {};
-    Dot(int x, int y, bool valid) : x(x), y(y) {};
 
     // Конструктор копирования
     Dot(const Dot& other) {
@@ -40,18 +39,6 @@ struct Dot {
         }
 
         return *this;
-    }
-
-    inline bool operator==(const Dot& other) const {
-
-        if (this->x == other.x && this->y == other.y) {
-
-            return true;
-
-        }
-
-        return false;
-
     }
 
     ~Dot() = default;

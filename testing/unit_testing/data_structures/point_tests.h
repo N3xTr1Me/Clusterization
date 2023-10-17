@@ -9,6 +9,30 @@
 
 namespace Point_tests {
 
+    // Отношения равенства вынесены сюда для удобства тестирования, в исходных классах Dot и Point оператор '==' не определен в угоду оптимизации.
+
+    bool _dots_equal(Dot& first, Dot& second) {
+
+        if (first.x == second.x && first.y == second.y) {
+            return true;
+        }
+
+        return false;
+
+    }
+
+    bool _points_equal(Point& first, Point& second) {
+
+        if (first.target_id == second.target_id && _dots_equal(first, second)) {
+            return true;
+        }
+
+        return false;
+
+    }
+
+    //--------------------------------------------------------------------------------------------------------------
+
 
     void default_construction() {
 
@@ -37,21 +61,6 @@ namespace Point_tests {
 
     }
 
-    void full_parameter_construction() {
-
-        int x = 10;
-        int y = 20;
-
-        Point sample{x, y};
-
-        assert(sample.target_id == nullptr);
-        assert(sample.x == x);
-        assert(sample.y == y);
-
-        std::cout << "Three-parameter construction: OK" << std::endl;
-
-    }
-
     void copy_construction_and_assignment() {
 
         int x = 100;
@@ -63,9 +72,7 @@ namespace Point_tests {
 
         Point constructor{original};
 
-        assert(constructor.target_id == nullptr);
-        assert(constructor.x == x);
-        assert(constructor.y == y);
+        assert(_points_equal(constructor, original));
 
         std::cout << "Copy-construction: OK" << std::endl;
 
@@ -73,9 +80,7 @@ namespace Point_tests {
 
         Point assignment = original;
 
-        assert(assignment.target_id == nullptr);
-        assert(assignment.x == x);
-        assert(assignment.y == y);
+        assert(_points_equal(assignment, original));
 
         std::cout << "Copy-assignment: OK" << std::endl;
 
@@ -90,8 +95,7 @@ namespace Point_tests {
 
         auto copy = Point::squeeze(original);
 
-        assert(copy.x == x);
-        assert(copy.y == y);
+        assert(_dots_equal(copy, original));
 
         std::cout << "Copy to base class: OK" << std::endl;
 
@@ -103,7 +107,6 @@ namespace Point_tests {
 
         default_construction();
         coordinate_construction();
-        full_parameter_construction();
         copy_construction_and_assignment();
         squeeze_to_base();
 
