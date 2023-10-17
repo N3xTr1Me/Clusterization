@@ -7,11 +7,12 @@
 #include "../../../algorithm/data_structures/point.h"
 
 
-namespace Point_tests {
+namespace Point_utility {
 
-    // Отношения равенства вынесены сюда для удобства тестирования, в исходных классах Dot и Point оператор '==' не определен в угоду оптимизации.
+    // Отношения равенства вынесены сюда для удобства тестирования. 
+    // В исходных классах Dot и Point оператор '==' не определен в угоду оптимизации.
 
-    bool _dots_equal(Dot& first, Dot& second) {
+    inline bool dots_equal(Dot& first, Dot& second) {
 
         if (first.x == second.x && first.y == second.y) {
             return true;
@@ -21,9 +22,9 @@ namespace Point_tests {
 
     }
 
-    bool _points_equal(Point& first, Point& second) {
+    inline bool points_equal(Point& first, Point& second) {
 
-        if (first.target_id == second.target_id && _dots_equal(first, second)) {
+        if (first.target_id == second.target_id && dots_equal(first, second)) {
             return true;
         }
 
@@ -31,8 +32,10 @@ namespace Point_tests {
 
     }
 
-    //--------------------------------------------------------------------------------------------------------------
+}
 
+
+namespace Point_tests {
 
     void default_construction() {
 
@@ -72,7 +75,7 @@ namespace Point_tests {
 
         Point constructor{original};
 
-        assert(_points_equal(constructor, original));
+        assert(Point_utility::points_equal(constructor, original));
 
         std::cout << "Copy-construction: OK" << std::endl;
 
@@ -80,7 +83,7 @@ namespace Point_tests {
 
         Point assignment = original;
 
-        assert(_points_equal(assignment, original));
+        assert(Point_utility::points_equal(assignment, original));
 
         std::cout << "Copy-assignment: OK" << std::endl;
 
@@ -95,7 +98,7 @@ namespace Point_tests {
 
         auto copy = Point::squeeze(original);
 
-        assert(_dots_equal(copy, original));
+        assert(Point_utility::dots_equal(copy, original));
 
         std::cout << "Copy to base class: OK" << std::endl;
 
