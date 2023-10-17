@@ -1,6 +1,16 @@
-cmake_minimum_required(VERSION 3.23)
-project(clusterization)
-
 set(CMAKE_CXX_STANDARD 11)
 
-add_executable(clusterization main.cpp data_structures/target.h data_structures/point.h config.h data_structures/domain.h solver/solution.h solver/solver.cpp solver/solver.h)
+set(ALGORITHM_HDR
+        configuration/config.h
+        data_structures/point.h
+        data_structures/domain.h
+        data_structures/target.h
+        configuration/state_handler.h
+        data_structures/solution.h
+)
+
+set(ALGORITHM_SRC
+        main.cpp
+)
+
+add_executable(algorithm ${ALGORITHM_HDR} ${ALGORITHM_SRC})

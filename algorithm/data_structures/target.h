@@ -1,76 +1,111 @@
 #ifndef CLUSTERIZATION_TARGET_H
 #define CLUSTERIZATION_TARGET_H
 
-#include "point.h"
-
-
-// Интерфейс цели.
-class ITarget {
-
-public:
-    virtual unsigned int number_of_points() const = 0;
-
-    virtual void add_point(Point& point) = 0;
-
-    virtual Point* operator[](unsigned int index) const = 0;
-
-    virtual ~ITarget() = default;
-
-};
+#include "./Domain.h"
 
 
 // Цель, т.е. кластер точек, находящихся рядом друг с другои на плоскости (Близость определяется как расстояния не более
 // x_epsilon по оси X и y_espilon по оси Y).
-class Target : public ITarget {
+class Target {
 
-    Point* data[POINT_LIMIT];
+protected:
 
-    // "Реальный" размер, занятый валидными точками
+    // "Реальный" размер цели, т.е. количество входящих в нее точек
     unsigned int size = 0;
+
+    Dot points[POINT_LIMIT];
 
 public:
 
     Target() = default;
 
-    Target(const Target& other) {
-        this->size = other.size;
+    // "Основной" конструктор, создающий цель по первой точке
+    explicit Target(Dot& first) : size(0), points() {
 
-        for (unsigned int i = 0; i < this->size; ++i) {
-            this->data[i] = other.data[i];
-            this->data[i]->target_id = this;
-        }
-    };
+        this->points[this->size++] = first;
 
-    explicit Target(Point& first) : size(0), data() {
-        first.target_id = this;
-        this->data[this->size++] = &first;
     }
 
-    unsigned int number_of_points() const override { return this->size; };
+    // Конструктор копирования
+    Target(const Target& other) {
 
-    void add_point(Point& point) override {
-        if (this->size < POINT_LIMIT) {
-            point.target_id = this;
-            this->data[this->size++] = &point;
-        }
-    };
-
-    Point* operator[](unsigned int index) const override { return this->data[index]; };
-
-    Target& operator=(const Target& other) {
         this->size = other.size;
 
         for (unsigned int i = 0; i < this->size; ++i) {
-            this->data[i] = other[i];
-            if (this->data[i] != nullptr) {
-                this->data[i]->target_id = this;
+            this->points[i] = other.points[i];
+        }
+
+    }
+
+    //------------------------------------------------------------------------------------------------------------------
+
+    inline unsigned int get_size() const noexcept { return this->size; };
+
+    // Добавление точки
+    inline void add_point(Point& point) {
+        
+        // Проверяем на переполнение цели
+        if (this->size >= POINT_LIMIT) {
+            
+            // Если в текущую цель добавить точку нельзя, то сообщим в State
+            State::call().report(
+                Errors::target_points_overflow,
+                "Target is full! Cannot add more points."
+            );
+
+            // и ничего не добавим
+            return;
+        }
+
+
+        // Если же массив внутри текущей цели не заполнен, то добавим в него упрощенное представление точки 'Dot'
+        this->points[this->size++] = Point::squeeze(point);
+        // Также заменим в оригинальной указатель на цель, чтобы он указывал на текущую цель
+        point.target_id = this;
+
+    }
+
+    //------------------------------------------------------------------------------------------------------------------
+
+    inline const Dot& operator[](unsigned int index) const {
+
+        // Если запрашиваемый индекс за пределами массива, то:
+        if (index >= this->size) {
+            
+            // 1) Cообщим в State
+            State::call().report(
+                Errors::target_index_out_of_bounds,
+                "Index out of range! Points in target: " + std::to_string(this->size)
+            );
+
+            // 2) Вернем последнюю точку, если размер цели не 0. 
+            // В противном случае вернем первую дефолтно инициализированную точку.
+            return this->points[this->size > 0 ? this->size - 1 : 0];
+        }
+
+        return this->points[index];
+    }
+
+    // Оператор присваивания, логика аналогичная конструктору копирования
+    Target& operator=(const Target& other) {
+
+        // Однако еще проверяем на самоприсвоение
+        if (this != &other) {
+
+            this->size = other.size;
+
+            for (unsigned int i = 0; i < this->size; ++i) {
+                this->points[i] = other.points[i];
             }
+
         }
 
         return *this;
+
     }
 
-    ~Target() override = default;
+    ~Target() = default;
+    
 };
 
 
