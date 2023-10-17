@@ -28,7 +28,7 @@ public:
     Domain() = default;
 
     // Конструктор области фиксированного размера
-    explicit Domain(int points[Y_LIMIT][X_LIMIT]) : x_size(X_LIMIT), y_size(Y_LIMIT), plane(), number_of_points()
+    explicit Domain(int points[Y_LIMIT][X_LIMIT])
     {
 
         for (int y = 0; y < this->y_size; ++y) {
@@ -49,7 +49,7 @@ public:
     }
 
     // Создание области "произвольного" размера
-    Domain(int** points, unsigned int x_size, unsigned int y_size) : plane()
+    Domain(int** points, unsigned int x_size, unsigned int y_size)
     {
         // Если размер по оси X больше допустимого, то:
         if (x_size > X_LIMIT) {
@@ -76,8 +76,6 @@ public:
 
         }
 
-        unsigned int i = 0;
-
         this->x_size = x_size;
         this->y_size = y_size;
 
@@ -86,10 +84,10 @@ public:
 
                 if (points[y][x] > 0) {
 
-                    this->real_points[i] = Point(x, y);
-                    this->plane[y][x] = &this->real_points[i];
+                    this->real_points[this->number_of_points] = Point(x, y);
+                    this->plane[y][x] = &this->real_points[this->number_of_points];
 
-                    i++;
+                    this->number_of_points++;
 
                 }
 
