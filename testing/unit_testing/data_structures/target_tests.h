@@ -39,7 +39,7 @@ namespace Target_tests {
 
         TestTarget() : Target() {};
 
-        TestTarget(Target& original) : Target(original) {};
+        TestTarget(const Target& original) : Target(original) {};
 
         // !!! Метод небезопасен, т.к. его задача выдать нефильтрованные данные из Target::points. 
         // Следует использовать только для тестирования.
@@ -50,7 +50,7 @@ namespace Target_tests {
     //--------------------------------------------------------------------------------------------------------------
 
     // Служебынй метод для упрощения проверки стандартного конструктора целей
-    bool _check_default_target_construction(Target& sample) {
+    bool _check_default_target_construction(const Target& sample) {
 
         if (sample.get_size() > 0) {
             return false;
@@ -171,26 +171,6 @@ namespace Target_tests {
 
     }
 
-    void index_error() {
-
-        Target sample{};
-
-        //----------------------------------------------------------------------------------------------------------
-
-
-        for (int i = 0; i < POINT_LIMIT; ++i) {
-            Point p{i, i};
-            sample.add_point(p);
-        }
-
-        //----------------------------------------------------------------------------------------------------------
-
-        assert(Point_utility::dots_equal(sample[POINT_LIMIT], sample[POINT_LIMIT - 1]));
-
-        std::cout << "Index out of bounds handling: OK" << std::endl;
-
-    }
-
     void run_test() {
 
         std::cout << "\nTarget data structure testing: \n{" << std::endl;
@@ -199,7 +179,6 @@ namespace Target_tests {
         point_appending();
         copy_construction_assignment();
         point_overflow();
-        index_error();
 
         std::cout << "}\n" << std::endl;
     }

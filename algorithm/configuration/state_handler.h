@@ -16,10 +16,8 @@ enum Errors : unsigned int
     domain_Y_out_of_bounds,
 
     target_points_overflow,
-    target_index_out_of_bounds,
 
     solution_size_limit_exceeded,
-    solution_index_out_of_bounds,
 
     //------------------------------------------------------------------------------------------------------------------
     // Количество 'кодов' ошибок. Нужно для создания массива в State.

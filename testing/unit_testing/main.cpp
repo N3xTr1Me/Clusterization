@@ -13,6 +13,8 @@ int main() {
     Target_tests::run_test();
     Solution_tests::run_tests();
 
+    std::cout << "\n[All tests passed!]\n" << std::endl;
+
     return 0;
 
 }

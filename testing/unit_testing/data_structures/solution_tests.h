@@ -33,7 +33,7 @@ namespace Solution_tests {
 
     void two_parameter_construction() {
 
-        int number_of_targets = TARGET_LIMIT / 2;
+        unsigned int number_of_targets = TARGET_LIMIT / 2;
         Target test_targets[TARGET_LIMIT];
 
         //----------------------------------------------------------------------------------------------------------
@@ -128,33 +128,6 @@ namespace Solution_tests {
 
     }
 
-    void index_out_of_bounds() {
-
-        // Обнуляем счетчики ошибок
-        State::call().reset();
-
-        //----------------------------------------------------------------------------------------------------------
-
-        Target test_targets[TARGET_LIMIT];
-
-        for (unsigned int i = 0; i < TARGET_LIMIT; ++i) {
-
-            test_targets[i] = Target(Dot(i, i));
-
-        }
-
-        Solution sample{test_targets, TARGET_LIMIT};
-
-        //----------------------------------------------------------------------------------------------------------
-
-        auto out_of_bounds = sample[TARGET_LIMIT + 1];
-
-        assert(State::call().check(Errors::solution_index_out_of_bounds) == 1);
-
-        std::cout << "Index out of bounds error handling: OK" << std::endl;
-
-    }
-
     void run_tests() {
 
         std::cout << "\nSolution data structure: \n{\n";
@@ -163,7 +136,6 @@ namespace Solution_tests {
         two_parameter_construction();
         copy_construction_assignment();
         size_limit_excess();
-        index_out_of_bounds();
 
         std::cout << "}\n" << std::endl;
 
