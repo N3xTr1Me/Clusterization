@@ -56,24 +56,7 @@ public:
 
     //------------------------------------------------------------------------------------------------------------------
 
-    inline Target& operator[](unsigned int index) {
-
-        // Проверяем на выход за границу массива
-        if (index >= TARGET_LIMIT) {
-
-            State::call().report(
-                Errors::solution_index_out_of_bounds,
-                "Index: " + std::to_string(index) + " is out of bounds! Solution size: " + std::to_string(this->size)
-            );
-
-            // Вернем последний элемент массива, если ненулевой размер, либо первый
-            return this->targets[this->size > 0 ? this->size - 1 : 0];
-
-        }
-
-        return this->targets[index]; 
-        
-    };
+    inline const Target& operator[](unsigned int index) { return this->targets[index]; };
 
     Solution& operator=(const Solution& other) {
 

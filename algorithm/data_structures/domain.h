@@ -117,11 +117,11 @@ public:
 
     // Методы "геттеры"
 
-    unsigned int get_x_size() const noexcept { return this->x_size; };
-    unsigned int get_y_size() const noexcept { return this->y_size; };
+    inline unsigned int get_x_size() const noexcept { return this->x_size; };
+    inline unsigned int get_y_size() const noexcept { return this->y_size; };
 
     // получение точки из массива
-    Point* get_point(int x, int y) {
+    inline Point* get_point(int x, int y) {
 
         // Если запросили точку за пределами массива по Y, то:
         if (y >= this->y_size) {

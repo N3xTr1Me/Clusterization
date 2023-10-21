@@ -66,7 +66,7 @@ struct Point : public Dot {
     //------------------------------------------------------------------------------------------------------------------
 
     // Сжатие точки для хранения в целях
-    static Dot squeeze(const Point& original) { return {original.x, original.y}; }
+    inline static Dot squeeze(const Point& original) { return {original.x, original.y}; }
 
     //------------------------------------------------------------------------------------------------------------------
 

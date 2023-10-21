@@ -57,7 +57,6 @@ public:
             return;
         }
 
-
         // Если же массив внутри текущей цели не заполнен, то добавим в него упрощенное представление точки 'Dot'
         this->points[this->size++] = Point::squeeze(point);
         // Также заменим в оригинальной указатель на цель, чтобы он указывал на текущую цель
@@ -67,24 +66,7 @@ public:
 
     //------------------------------------------------------------------------------------------------------------------
 
-    inline const Dot& operator[](unsigned int index) const {
-
-        // Если запрашиваемый индекс за пределами массива, то:
-        if (index >= this->size) {
-            
-            // 1) Cообщим в State
-            State::call().report(
-                Errors::target_index_out_of_bounds,
-                "Index out of range! Points in target: " + std::to_string(this->size)
-            );
-
-            // 2) Вернем последнюю точку, если размер цели не 0. 
-            // В противном случае вернем первую дефолтно инициализированную точку.
-            return this->points[this->size > 0 ? this->size - 1 : 0];
-        }
-
-        return this->points[index];
-    }
+    inline const Dot& operator[](unsigned int index) const { return this->points[index]; }
 
     // Оператор присваивания, логика аналогичная конструктору копирования
     Target& operator=(const Target& other) {
