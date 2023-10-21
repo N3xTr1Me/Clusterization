@@ -19,6 +19,9 @@ namespace Domain_tests {
 
         public:
 
+        TestDomain() : Domain() {};
+        TestDomain(int points[Y_LIMIT][X_LIMIT]) : Domain(points) {}
+
         // !!! Метод небезопасен, т.к. его задача выдать нефильтрованные данные из Domain::plane. 
         // Следует использовать только для тестирования.
         Point* hard_get(int x, int y) { return this->plane[y][x]; }
