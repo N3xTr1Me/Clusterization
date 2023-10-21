@@ -35,7 +35,11 @@ namespace Target_tests {
 
     class TestTarget : public Target {
 
-        public: 
+        public:
+
+        TestTarget() : Target() {};
+
+        TestTarget(Target& original) : Target(original) {};
 
         // !!! Метод небезопасен, т.к. его задача выдать нефильтрованные данные из Target::points. 
         // Следует использовать только для тестирования.
@@ -46,11 +50,17 @@ namespace Target_tests {
     //--------------------------------------------------------------------------------------------------------------
 
     // Служебынй метод для упрощения проверки стандартного конструктора целей
-    bool _check_default_target_construction(TestTarget& sample) {
+    bool _check_default_target_construction(Target& sample) {
+
+        if (sample.get_size() > 0) {
+            return false;
+        }
+
+        TestTarget resource{sample};
 
         for (unsigned int i = 0; i < POINT_LIMIT; ++i) {
 
-            auto dot = sample.hard_get(i);
+            auto dot = resource.hard_get(i);
 
             if (dot == nullptr) {
                 return false;

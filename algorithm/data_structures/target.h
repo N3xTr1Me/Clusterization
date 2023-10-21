@@ -20,7 +20,7 @@ public:
     Target() = default;
 
     // "Основной" конструктор, создающий цель по первой точке
-    explicit Target(Dot& first) : size(0), points() {
+    explicit Target(const Dot& first) : size(0), points() {
 
         this->points[this->size++] = first;
 

@@ -7,6 +7,8 @@
 // Решение задачи, т.е. набор целей, найденных алгоритмом
 class Solution {
 
+protected:
+
     // "Реальный" размер массива
     unsigned int size = 0;
 
@@ -15,9 +17,22 @@ class Solution {
 
 public:
 
-    Solution() = default;
+    Solution() : targets() {};
 
-    Solution(Target data[TARGET_LIMIT], unsigned int size) : size(size) {
+    Solution(Target data[TARGET_LIMIT], unsigned int size) {
+
+        if (size > TARGET_LIMIT) {
+            
+            State::call().report(
+                Errors::solution_size_limit_exceeded,
+                "Solution size: " + std::to_string(size) + " exceeds size limit of: " + std::to_string(TARGET_LIMIT)
+            );
+
+            size = TARGET_LIMIT;
+
+        }
+
+        this->size = size;
 
         for (unsigned int i = 0; i < this->size; ++i) {
             this->targets[i] = data[i];
@@ -41,7 +56,24 @@ public:
 
     //------------------------------------------------------------------------------------------------------------------
 
-    inline Target& operator[](unsigned int index) { return this->targets[index]; };
+    inline Target& operator[](unsigned int index) {
+
+        // Проверяем на выход за границу массива
+        if (index >= TARGET_LIMIT) {
+
+            State::call().report(
+                Errors::solution_index_out_of_bounds,
+                "Index: " + std::to_string(index) + " is out of bounds! Solution size: " + std::to_string(this->size)
+            );
+
+            // Вернем последний элемент массива, если ненулевой размер, либо первый
+            return this->targets[this->size > 0 ? this->size - 1 : 0];
+
+        }
+
+        return this->targets[index]; 
+        
+    };
 
     Solution& operator=(const Solution& other) {
 

@@ -18,6 +18,9 @@ enum Errors : unsigned int
     target_points_overflow,
     target_index_out_of_bounds,
 
+    solution_size_limit_exceeded,
+    solution_index_out_of_bounds,
+
     //------------------------------------------------------------------------------------------------------------------
     // Количество 'кодов' ошибок. Нужно для создания массива в State.
     // !!!Всегда должно находиться в конце энумерации!!!
